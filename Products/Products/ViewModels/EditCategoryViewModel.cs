@@ -84,6 +84,8 @@
             IsEnabled = true;
             apiService = new ApiService();
             navigationService = new NavigationService();
+
+            Description = category.Description;
         }
         #endregion
 
@@ -117,14 +119,11 @@
                 return;
             }
 
-            var category = new Category
-            {
-                Description = Description,
-            };
+            category.Description = Description;
 
             var mainViewModel = MainViewModel.GetInstance();
 
-            var response = await apiService.Post(
+            var response = await apiService.Put(
               "http://200.76.182.140:8085",
               "/api",
               "/Categories",
