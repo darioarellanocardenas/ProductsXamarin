@@ -10,6 +10,7 @@
     {
         #region Services
         NavigationService navigationService;
+        DialogService dialogService;
         #endregion
 
         #region Properties
@@ -25,6 +26,8 @@
         public Category()
         {
             navigationService = new NavigationService();
+            dialogService = new DialogService();
+
         }
         #endregion
 
@@ -41,6 +44,7 @@
         async void SelectCategory()
         {
             var mainViewModel = MainViewModel.GetInstance();
+            mainViewModel.category = this;
             mainViewModel.Products = new ProductsViewModel(Products);
             await navigationService.Navigate("ProductsView");
         }
@@ -69,13 +73,22 @@
 
         async void DeleteCategory()
         {
-            var mainViewModel = MainViewModel.GetInstance();
-            mainViewModel.Products = new ProductsViewModel(Products);
-            await navigationService.Navigate("ProductsView");
+            var response = await dialogService.ShowConfirm("Delete Category", "Are you sure to delete this record?");
+            if (!response)
+            {
+                return;
+            }
+
+            CategoriesViewModel.GetInstance().DeleteCategory(this);
         }
 
         #endregion
 
-
+        #region Methods
+        public override int GetHashCode()
+        {
+            return CategoryId;
+        }
+        #endregion
     }
 }

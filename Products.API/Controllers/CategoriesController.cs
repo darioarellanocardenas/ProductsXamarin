@@ -85,16 +85,19 @@ namespace Products.API.Controllers
             {
                 await db.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!CategoryExists(id))
+                if (ex.InnerException != null &&
+                    ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Index"))
                 {
-                    return NotFound();
+                    return BadRequest("There are a record with the same description.");
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(ex.Message);
                 }
+
             }
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -144,7 +147,25 @@ namespace Products.API.Controllers
             }
 
             db.Categories.Remove(category);
-            await db.SaveChangesAsync();
+
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null &&
+                    ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("REFERENCE"))
+                {
+                    return BadRequest("You can´t delete this record , because it has related records.");
+                }
+                else
+                {
+                    return BadRequest(ex.Message);
+                }
+
+            }
 
             return Ok(category);
         }

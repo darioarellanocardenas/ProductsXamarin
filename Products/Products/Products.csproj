@@ -49,9 +49,11 @@
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModels\CategoriesViewModel.cs" />
     <Compile Include="ViewModels\EditCategoryViewModel.cs" />
+    <Compile Include="ViewModels\EditProductViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NewCategoryViewModel.cs" />
+    <Compile Include="ViewModels\NewProductViewModel.cs" />
     <Compile Include="ViewModels\ProductsViewModel.cs" />
     <Compile Include="Views\CategoriesView.xaml.cs">
       <DependentUpon>CategoriesView.xaml</DependentUpon>
@@ -59,11 +61,17 @@
     <Compile Include="Views\EditCategoryView.xaml.cs">
       <DependentUpon>EditCategoryView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\EditProductView.xaml.cs">
+      <DependentUpon>EditProductView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NewCategoryView.xaml.cs">
       <DependentUpon>NewCategoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NewProductView.xaml.cs">
+      <DependentUpon>NewProductView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ProductsView.xaml.cs">
       <DependentUpon>ProductsView.xaml</DependentUpon>
@@ -142,6 +150,18 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\EditCategoryView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\NewProductView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\EditProductView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

@@ -3,7 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Products.Views.ProductsView"
              BindingContext="{Binding Main, Source={StaticResource Locator}}"
-             Title="Products">
+             Title="{Binding category.Description}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+            Command="{Binding NewProductCommand}"
+            Icon="ic_action_add_circle"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout 
             BindingContext="{Binding Products}"
@@ -14,6 +19,17 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
+                            <ViewCell.ContextActions>
+                                <MenuItem
+                                    Command="{Binding EditCommand}"
+                                    Text="Edit">
+                                </MenuItem>
+                                <MenuItem
+                                    Command="{Binding DeleteCommand}"
+                                    IsDestructive="true"
+                                    Text="Delete">
+                                </MenuItem>
+                            </ViewCell.ContextActions>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"></ColumnDefinition>

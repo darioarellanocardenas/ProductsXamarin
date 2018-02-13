@@ -8,6 +8,7 @@
     using System.Linq;
     using System.Windows.Input;
     using GalaSoft.MvvmLight.Command;
+    using System.Threading.Tasks;
 
     public class CategoriesViewModel : INotifyPropertyChanged
     {
@@ -121,8 +122,55 @@
 
         public void AddCategory(Category category)
         {
+            IsRefreshing = true;
             categories.Add(category);
             CategoriesList = new ObservableCollection<Category>(categories.OrderBy(c => c.Description));
+            IsRefreshing = false;
+        }
+
+        public void UpdateCategory(Category category)
+        {
+            IsRefreshing = true;
+            var oldCategory = categories
+                .Where(c => c.CategoryId == category.CategoryId)
+                .FirstOrDefault();
+            oldCategory = category;
+            CategoriesList = new ObservableCollection<Category>(categories.OrderBy(c => c.Description));
+            IsRefreshing = false;
+        }
+
+        public async Task DeleteCategory(Category category)
+        {
+            IsRefreshing = true;
+
+            var connection = await apiService.CheckConnection();
+
+            if (!connection.IsSuccess)
+            {
+                IsRefreshing = false;
+                await dialogService.ShowMessage("Error", connection.Message);
+                return;
+            }
+
+            var mainViewModel = MainViewModel.GetInstance();
+
+            var response = await apiService.Delete(
+              "http://200.76.182.140:8085",
+              "/api",
+              "/Categories",
+              mainViewModel.Token.TokenType,
+              mainViewModel.Token.AccessToken,
+              category);
+
+            if (!response.IsSuccess)
+            {
+                IsRefreshing = false;
+                await dialogService.ShowMessage("Error", response.Message);
+                return;
+            }
+            categories.Remove(category);
+            CategoriesList = new ObservableCollection<Category>(categories.OrderBy(c => c.Description));
+            IsRefreshing = false;
         }
         #endregion
 

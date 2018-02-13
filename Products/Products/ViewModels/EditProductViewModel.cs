@@ -7,7 +7,7 @@
     using System;
     using Models;
 
-    public class EditCategoryViewModel : INotifyPropertyChanged
+    public class EditProductViewModel : INotifyPropertyChanged
     {
         #region Events
         public event PropertyChangedEventHandler PropertyChanged;
@@ -23,7 +23,13 @@
         bool _isRunning;
         bool _isEnabled;
         string _description;
-        Category category;
+        decimal _price;
+        bool _isActive;
+        DateTime _lastPurchase;
+        double _stock;
+        string _remarks;
+        string _image;
+        Product product;
         #endregion
 
         #region Properties
@@ -74,18 +80,120 @@
                 }
             }
         }
+
+        public decimal Price
+        {
+            get
+            {
+                return _price;
+            }
+            set
+            {
+                if (_price != value)
+                {
+                    _price = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Price)));
+                }
+            }
+        }
+
+        public bool IsActive
+        {
+            get
+            {
+                return _isActive;
+            }
+            set
+            {
+                if (_isActive != value)
+                {
+                    _isActive = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsActive)));
+                }
+            }
+        }
+
+        public DateTime LastPurchase
+        {
+            get
+            {
+                return _lastPurchase;
+            }
+            set
+            {
+                if (_lastPurchase != value)
+                {
+                    _lastPurchase = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastPurchase)));
+                }
+            }
+        }
+
+        public double Stock
+        {
+            get
+            {
+                return _stock;
+            }
+            set
+            {
+                if (_stock != value)
+                {
+                    _stock = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Stock)));
+                }
+            }
+        }
+
+        public string Remarks
+        {
+            get
+            {
+                return _remarks;
+            }
+            set
+            {
+                if (_remarks != value)
+                {
+                    _remarks = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Remarks)));
+                }
+            }
+        }
+
+        public string Image
+        {
+            get
+            {
+                return _image;
+            }
+            set
+            {
+                if (_image != value)
+                {
+                    _image = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Image)));
+                }
+            }
+        }
         #endregion
 
         #region Constructors
-        public EditCategoryViewModel(Category category)
+        public EditProductViewModel(Product product)
         {
-            this.category = category;
+            this.product = product;
             dialogService = new DialogService();
             IsEnabled = true;
             apiService = new ApiService();
             navigationService = new NavigationService();
 
-            Description = category.Description;
+            Description = product.Description;
+            Price = product.Price;
+            IsActive = product.IsActive;
+            LastPurchase = product.LastPurchase;
+            Stock = product.Stock;
+            Remarks = product.Remarks;
+            Image = product.Image;
         }
         #endregion
 
@@ -119,17 +227,23 @@
                 return;
             }
 
-            category.Description = Description;
-
             var mainViewModel = MainViewModel.GetInstance();
+
+            product.Description = Description;
+            product.Price = Price;
+            product.IsActive = IsActive;
+            product.LastPurchase = LastPurchase;
+            product.Stock = Stock;
+            product.Remarks = Remarks;
+            product.Image = Image;
 
             var response = await apiService.Put(
               "http://200.76.182.140:8085",
               "/api",
-              "/Categories",
+              "/Products",
               mainViewModel.Token.TokenType,
               mainViewModel.Token.AccessToken,
-              category);
+              product);
 
             if (!response.IsSuccess)
             {
@@ -138,9 +252,9 @@
                 await dialogService.ShowMessage("Error", response.Message);
                 return;
             }
-
-            var categoriesViewModel = CategoriesViewModel.GetInstance();
-            categoriesViewModel.UpdateCategory(category);
+            
+            var productsViewModel = ProductsViewModel.GetInstance(mainViewModel.category.Products);
+            productsViewModel.UpdateProduct(product);
             await navigationService.Back();
 
             IsRunning = false;
@@ -148,6 +262,5 @@
 
         }
         #endregion
-
     }
 }
